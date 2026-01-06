@@ -3,37 +3,55 @@ import { categories, skills } from "@/lib/skills-data";
 import { SkillCard } from "@/components/SkillCard";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { Globe } from "lucide-react";
 
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState<string>("all");
+  const { language, setLanguage, t } = useLanguage();
 
   const filteredSkills = activeCategory === "all" 
     ? skills 
     : skills.filter(skill => skill.category === activeCategory);
 
+  const toggleLanguage = () => {
+    setLanguage(language === 'en' ? 'zh' : 'en');
+  };
+
   return (
     <div className="min-h-screen bg-background font-body pb-20">
+      {/* Language Switcher */}
+      <div className="absolute top-4 right-4 z-50">
+        <Button 
+          onClick={toggleLanguage}
+          variant="outline" 
+          className="neo-border neo-shadow hover:neo-shadow-hover active:neo-shadow-active bg-white text-black font-bold gap-2"
+        >
+          <Globe className="w-4 h-4" />
+          {language === 'en' ? '中文' : 'English'}
+        </Button>
+      </div>
+
       {/* Hero Section */}
       <header className="relative border-b-4 border-black bg-white">
         <div className="container mx-auto px-4 py-12 md:py-20 flex flex-col md:flex-row items-center gap-8">
           <div className="flex-1 space-y-6">
             <div className="inline-block bg-black text-white px-3 py-1 font-mono text-sm font-bold transform -rotate-2">
-              OPEN SOURCE SKILLS LIBRARY
+              {t('hero.tagline')}
             </div>
             <h1 className="text-5xl md:text-7xl font-display font-bold leading-none tracking-tighter">
-              CLAUDE <br/>
-              <span className="text-primary">SKILLS</span> HUB
+              {t('hero.title.prefix')} <br/>
+              <span className="text-primary">{t('hero.title.suffix')}</span> {t('hero.title.hub')}
             </h1>
             <p className="text-xl md:text-2xl font-medium max-w-xl border-l-4 border-primary pl-4 py-2 bg-muted/30">
-              A curated collection of capabilities to supercharge your AI workflow.
-              Categorized for PMs, Developers, and Creators.
+              {t('hero.description')}
             </p>
             <div className="flex gap-4 pt-4">
               <Button className="neo-border neo-shadow hover:neo-shadow-hover active:neo-shadow-active h-12 px-8 text-lg font-bold rounded-none bg-primary text-primary-foreground hover:bg-primary/90">
-                Explore Skills
+                {t('hero.button.explore')}
               </Button>
               <Button variant="outline" className="neo-border neo-shadow hover:neo-shadow-hover active:neo-shadow-active h-12 px-8 text-lg font-bold rounded-none bg-white text-black hover:bg-gray-50">
-                Contribute
+                {t('hero.button.contribute')}
               </Button>
             </div>
           </div>
@@ -62,7 +80,7 @@ export default function Home() {
                   : "bg-white text-black hover:bg-gray-100"
               )}
             >
-              ALL SKILLS
+              {t('filter.all')}
             </Button>
             {categories.map((category) => (
               <Button
@@ -77,7 +95,7 @@ export default function Home() {
                 )}
                 style={activeCategory === category.id ? { backgroundColor: category.color } : {}}
               >
-                {category.name.split(" ")[0].toUpperCase()}
+                {t(category.name)}
               </Button>
             ))}
           </div>
@@ -98,10 +116,10 @@ export default function Home() {
             </div>
             <div>
               <h2 className="text-3xl font-display font-bold mb-2 uppercase">
-                {categories.find(c => c.id === activeCategory)?.name}
+                {t(categories.find(c => c.id === activeCategory)?.name || '')}
               </h2>
               <p className="text-xl font-medium text-muted-foreground">
-                {categories.find(c => c.id === activeCategory)?.description}
+                {t(`${categories.find(c => c.id === activeCategory)?.name}.desc`)}
               </p>
             </div>
           </div>
@@ -117,7 +135,7 @@ export default function Home() {
         {/* Empty State */}
         {filteredSkills.length === 0 && (
           <div className="text-center py-20 border-4 border-dashed border-black/20">
-            <h3 className="text-2xl font-bold text-muted-foreground">No skills found in this category.</h3>
+            <h3 className="text-2xl font-bold text-muted-foreground">{t('empty.message')}</h3>
           </div>
         )}
       </main>
@@ -127,11 +145,11 @@ export default function Home() {
         <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
           <div>
             <h2 className="text-2xl font-display font-bold">CLAUDE SKILLS HUB</h2>
-            <p className="text-gray-400 mt-2">Curated for PMs & Developers.</p>
+            <p className="text-gray-400 mt-2">{t('footer.curated')}</p>
           </div>
           <div className="text-right">
             <p className="font-mono text-sm text-gray-500">
-              © 2026 Manus AI. All rights reserved.
+              {t('footer.rights')}
             </p>
           </div>
         </div>

@@ -18,6 +18,7 @@ export interface Skill {
   isCommunity?: boolean;
   isHighlight?: boolean;
   author?: string;
+  url?: string;
 }
 
 export interface Category {
@@ -85,6 +86,7 @@ export const skills: Skill[] = [
       zh: ["品牌策略"]
     },
     isOfficial: true,
+    url: "https://github.com/anthropics/skills/tree/main/skills/brand-guidelines"
   },
   {
     id: "brand-voice-analyzer",
@@ -104,6 +106,7 @@ export const skills: Skill[] = [
     },
     isCommunity: true,
     author: "alirezarezvani",
+    url: "https://github.com/alirezarezvani/claude-skills"
   },
   {
     id: "domain-name-brainstormer",
@@ -227,6 +230,7 @@ export const skills: Skill[] = [
       zh: ["内容创作"]
     },
     isOfficial: true,
+    url: "https://github.com/anthropics/skills/tree/main/skills/internal-comms"
   },
   {
     id: "family-history-research",
@@ -332,6 +336,7 @@ export const skills: Skill[] = [
       zh: ["界面工程"]
     },
     isOfficial: true,
+    url: "https://github.com/anthropics/skills/tree/main/skills/frontend-design"
   },
   {
     id: "web-asset-generator",
@@ -349,6 +354,7 @@ export const skills: Skill[] = [
       en: ["UI & Frontend"],
       zh: ["界面工程"]
     },
+    url: "https://github.com/travisvn/awesome-claude-skills"
   },
   {
     id: "canvas-design",
@@ -367,6 +373,7 @@ export const skills: Skill[] = [
       zh: ["视觉资产"]
     },
     isOfficial: true,
+    url: "https://github.com/anthropics/skills/tree/main/skills/canvas-design"
   },
   {
     id: "algorithmic-art",
@@ -384,6 +391,7 @@ export const skills: Skill[] = [
       en: ["Visual Assets"],
       zh: ["视觉资产"]
     },
+    url: "https://github.com/anthropics/skills/tree/main/skills/algorithmic-art"
   },
   {
     id: "image-enhancer",
@@ -418,6 +426,7 @@ export const skills: Skill[] = [
       en: ["Media Tools"],
       zh: ["媒体工具"]
     },
+    url: "https://github.com/anthropics/skills/tree/main/skills/slack-gif-creator"
   },
   {
     id: "video-downloader",
@@ -455,6 +464,7 @@ export const skills: Skill[] = [
       zh: ["开发流"]
     },
     isHighlight: true,
+    url: "https://github.com/obra/superpowers"
   },
   {
     id: "skill-creator",
@@ -472,6 +482,7 @@ export const skills: Skill[] = [
       en: ["Dev Workflow"],
       zh: ["开发流"]
     },
+    url: "https://github.com/anthropics/skills/tree/main/skills/skill-creator"
   },
   {
     id: "skill-seekers",
@@ -523,6 +534,7 @@ export const skills: Skill[] = [
       en: ["Cloud & DevOps"],
       zh: ["云原生"]
     },
+    url: "https://github.com/travisvn/awesome-claude-skills"
   },
   {
     id: "ffuf-web-fuzzing",
@@ -540,6 +552,7 @@ export const skills: Skill[] = [
       en: ["Security & Testing"],
       zh: ["安全与测试"]
     },
+    url: "https://github.com/travisvn/awesome-claude-skills"
   },
   {
     id: "webapp-testing",
@@ -557,6 +570,7 @@ export const skills: Skill[] = [
       en: ["Security & Testing"],
       zh: ["安全与测试"]
     },
+    url: "https://github.com/anthropics/skills/tree/main/skills/webapp-testing"
   },
   {
     id: "d3-visualization",
@@ -574,6 +588,7 @@ export const skills: Skill[] = [
       en: ["Security & Testing"],
       zh: ["安全与测试"]
     },
+    url: "https://github.com/travisvn/awesome-claude-skills"
   },
 
   // 5. Research
@@ -661,6 +676,7 @@ export const skills: Skill[] = [
       en: ["Domain Specific"],
       zh: ["领域专用"]
     },
+    url: "https://github.com/K-Dense-AI/claude-scientific-skills"
   },
 
   // 6. Productivity
@@ -681,6 +697,7 @@ export const skills: Skill[] = [
       zh: ["办公套件"]
     },
     isOfficial: true,
+    url: "https://github.com/anthropics/skills/tree/main/skills/docx"
   },
   {
     id: "theme-factory",
@@ -698,6 +715,7 @@ export const skills: Skill[] = [
       en: ["Office Suite"],
       zh: ["办公套件"]
     },
+    url: "https://github.com/anthropics/skills/tree/main/skills/theme-factory"
   },
   {
     id: "brainstorming",

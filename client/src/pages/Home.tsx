@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { categories, skills } from "@/lib/skills-data";
 import { SkillCard } from "@/components/SkillCard";
+import { WhatIsSkills } from "@/components/WhatIsSkills";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -65,6 +66,9 @@ export default function Home() {
           </div>
         </div>
       </header>
+
+      {/* What Is Skills Section */}
+      <WhatIsSkills />
 
       {/* Category Filter */}
       <section className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b-2 border-black py-4 overflow-x-auto">

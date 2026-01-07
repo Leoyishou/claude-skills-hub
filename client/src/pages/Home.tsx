@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useSkillsData, useSeedDatabase } from "@/hooks/useSkillsData";
 import { SkillCard } from "@/components/SkillCard";
 import { WhatIsSkills } from "@/components/WhatIsSkills";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/_core/hooks/useAuth";
-import { Globe, Database, Loader2 } from "lucide-react";
+import { Globe, Database, Loader2, Search, X } from "lucide-react";
 import { toast } from "sonner";
 
 export default function Home() {
@@ -15,15 +16,50 @@ export default function Home() {
   const { user, isAuthenticated } = useAuth();
 
   const [activeCategory, setActiveCategory] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const { language, setLanguage, t } = useLanguage();
   
   // Use database data with static fallback
   const { skills, categories, isLoading, isFromDatabase } = useSkillsData();
   const { seedFromScript, isLoading: isSeedingLoading } = useSeedDatabase();
 
-  const filteredSkills = activeCategory === "all" 
-    ? skills 
-    : skills.filter(skill => skill.category === activeCategory);
+  // Filter skills by category and search query
+  const filteredSkills = useMemo(() => {
+    let result = skills;
+    
+    // Filter by category
+    if (activeCategory !== "all") {
+      result = result.filter(skill => skill.category === activeCategory);
+    }
+    
+    // Filter by search query (supports both Chinese and English)
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim();
+      result = result.filter(skill => {
+        // Search in name
+        const nameMatch = skill.name.toLowerCase().includes(query);
+        
+        // Search in description (both languages)
+        const descEnMatch = skill.description.en.toLowerCase().includes(query);
+        const descZhMatch = skill.description.zh.toLowerCase().includes(query);
+        
+        // Search in scenario (both languages)
+        const scenarioEnMatch = skill.scenario.en.toLowerCase().includes(query);
+        const scenarioZhMatch = skill.scenario.zh.toLowerCase().includes(query);
+        
+        // Search in tags (both languages)
+        const tagsEnMatch = skill.tags.en.some(tag => tag.toLowerCase().includes(query));
+        const tagsZhMatch = skill.tags.zh.some(tag => tag.toLowerCase().includes(query));
+        
+        // Search in author
+        const authorMatch = skill.author?.toLowerCase().includes(query) || false;
+        
+        return nameMatch || descEnMatch || descZhMatch || scenarioEnMatch || scenarioZhMatch || tagsEnMatch || tagsZhMatch || authorMatch;
+      });
+    }
+    
+    return result;
+  }, [skills, activeCategory, searchQuery]);
 
   const toggleLanguage = () => {
     setLanguage(language === 'en' ? 'zh' : 'en');
@@ -39,6 +75,10 @@ export default function Home() {
       toast.error("数据库初始化失败，请确保已登录并重试。");
       console.error("Seed error:", error);
     }
+  };
+
+  const clearSearch = () => {
+    setSearchQuery("");
   };
 
   return (
@@ -111,15 +151,36 @@ export default function Home() {
       {/* What Is Skills Section */}
       <WhatIsSkills />
 
-      {/* Category Filter */}
-      <section id="skills-list-section" className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b-2 border-black py-4 overflow-x-auto">
-        <div className="container mx-auto px-4">
-          <div className="flex gap-2 md:gap-4 min-w-max">
+      {/* Search and Category Filter */}
+      <section id="skills-list-section" className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b-2 border-black py-4">
+        <div className="container mx-auto px-4 space-y-4">
+          {/* Search Box */}
+          <div className="relative max-w-xl">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder={language === 'en' ? 'Search skills by name, description, or tags...' : '按名称、描述或标签搜索技能...'}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-12 pr-10 h-12 text-lg rounded-none border-2 border-black font-medium focus-visible:ring-primary focus-visible:ring-offset-0"
+            />
+            {searchQuery && (
+              <button
+                onClick={clearSearch}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            )}
+          </div>
+          
+          {/* Category Filter */}
+          <div className="flex gap-2 md:gap-4 overflow-x-auto pb-2">
             <Button
               variant={activeCategory === "all" ? "default" : "outline"}
               onClick={() => setActiveCategory("all")}
               className={cn(
-                "rounded-none font-bold border-2 border-black transition-all",
+                "rounded-none font-bold border-2 border-black transition-all shrink-0",
                 activeCategory === "all" 
                   ? "bg-black text-white neo-shadow" 
                   : "bg-white text-black hover:bg-gray-100"
@@ -133,7 +194,7 @@ export default function Home() {
                 variant={activeCategory === category.id ? "default" : "outline"}
                 onClick={() => setActiveCategory(category.id)}
                 className={cn(
-                  "rounded-none font-bold border-2 border-black transition-all flex items-center gap-2",
+                  "rounded-none font-bold border-2 border-black transition-all flex items-center gap-2 shrink-0",
                   activeCategory === category.id 
                     ? "bg-primary text-primary-foreground neo-shadow" 
                     : "bg-white text-black hover:bg-gray-100"
@@ -156,8 +217,27 @@ export default function Home() {
           </div>
         )}
 
+        {/* Search Results Info */}
+        {!isLoading && searchQuery && (
+          <div className="mb-6 flex items-center justify-between">
+            <p className="text-lg font-medium">
+              {language === 'en' 
+                ? `Found ${filteredSkills.length} skill${filteredSkills.length !== 1 ? 's' : ''} for "${searchQuery}"`
+                : `找到 ${filteredSkills.length} 个与"${searchQuery}"相关的技能`
+              }
+            </p>
+            <Button
+              variant="ghost"
+              onClick={clearSearch}
+              className="text-muted-foreground hover:text-foreground"
+            >
+              {language === 'en' ? 'Clear search' : '清除搜索'}
+            </Button>
+          </div>
+        )}
+
         {/* Category Description */}
-        {!isLoading && activeCategory !== "all" && (
+        {!isLoading && !searchQuery && activeCategory !== "all" && (
           <div className="mb-12 flex items-start gap-6 border-4 border-black p-6 bg-white neo-shadow-lg">
             <div className="w-24 h-24 shrink-0 border-2 border-black bg-muted hidden md:block">
               <img 
@@ -189,7 +269,30 @@ export default function Home() {
         {/* Empty State */}
         {!isLoading && filteredSkills.length === 0 && (
           <div className="text-center py-20 border-4 border-dashed border-black/20">
-            <h3 className="text-2xl font-bold text-muted-foreground">{t('empty.message')}</h3>
+            <Search className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+            <h3 className="text-2xl font-bold text-muted-foreground mb-2">
+              {searchQuery 
+                ? (language === 'en' ? 'No skills found' : '未找到技能')
+                : t('empty.message')
+              }
+            </h3>
+            {searchQuery && (
+              <p className="text-muted-foreground mb-4">
+                {language === 'en' 
+                  ? 'Try different keywords or clear the search'
+                  : '尝试不同的关键词或清除搜索'
+                }
+              </p>
+            )}
+            {searchQuery && (
+              <Button
+                variant="outline"
+                onClick={clearSearch}
+                className="neo-border"
+              >
+                {language === 'en' ? 'Clear search' : '清除搜索'}
+              </Button>
+            )}
           </div>
         )}
 

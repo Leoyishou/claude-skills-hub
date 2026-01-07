@@ -105,14 +105,6 @@ export function WhatIsSkills() {
               </div>
             </a>
 
-            {/* Concept Image */}
-            <div className="border-4 border-black p-2 bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] rotate-1 hover:rotate-0 transition-transform duration-300">
-              <img 
-                src="/images/what-is-skills.png" 
-                alt="What is Skills Concept" 
-                className="w-full h-auto border-2 border-black"
-              />
-            </div>
           </div>
         </div>
       </div>
